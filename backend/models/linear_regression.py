@@ -1,0 +1,30 @@
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+from sklearn.metrics import mean_squared_error
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn import metrics
+
+def linear_regression(X, y, response):
+
+    quad = PolynomialFeatures (degree = 2)
+    x_quad = quad.fit_transform(X)
+
+    print("Spliting data into training and testing")
+    X_train, X_test, y_train, y_test = train_test_split(x_quad, y, train_size = 0.7, test_size = 0.3, random_state = 100 )
+
+    # Linear Regression
+    lr = LinearRegression()
+    lr = lr.fit(X_train, y_train)
+    y_pred = lr.predict(X_test)
+
+    response["intercept"] = lr.intercept_
+
+    response["score"] = lr.score(X_test, y_test)
+
+    response["rmse"] = np.sqrt( mean_squared_error( y_test, y_pred ))
+
+    response["r-squared"] = r2_score( y_test, y_pred )
+
+    return response
